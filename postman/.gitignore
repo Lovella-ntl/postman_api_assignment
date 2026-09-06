@@ -1,0 +1,15 @@
+# Environment files containing secrets
+.env
+.env.*
+
+# Local Postman data
+postman/local/
+postman/private/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/

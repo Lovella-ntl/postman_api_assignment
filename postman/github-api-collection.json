@@ -1,0 +1,585 @@
+{
+  "info": {
+    "_postman_id": "7f5c2c7a-2c5b-4b1d-9a12-github-api",
+    "name": "GitHub API Testing",
+    "description": "Postman collection for testing the GitHub REST API using authentication and CRUD operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.github.com"
+    },
+    {
+      "key": "owner",
+      "value": "Lovella-ntl"
+    },
+    {
+      "key": "repo",
+      "value": "postman-api-assignment"
+    },
+    {
+      "key": "file_path",
+      "value": "test-file.txt"
+    },
+    {
+      "key": "file_sha",
+      "value": ""
+    },
+    {
+      "key": "issue_number",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "GET Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Authenticated user exists\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.login).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GET - Read",
+      "item": [
+        {
+          "name": "GET Repository",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Repository name exists\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET File",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/contents/{{file_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "contents",
+                "{{file_path}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"File exists\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.eql(pm.environment.get(\"file_path\"));",
+                  "});",
+                  "",
+                  "pm.test(\"File SHA exists\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sha).to.exist;",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.sha) {",
+                  "    pm.environment.set(\"file_sha\", jsonData.sha);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Issue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/issues/{{issue_number}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "issues",
+                "{{issue_number}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Issue number exists\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.number).to.eql(Number(pm.environment.get(\"issue_number\")));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "POST - Create",
+      "item": [
+        {
+          "name": "POST Create Issue",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Postman API Testing Issue\",\n  \"body\": \"This issue was created using the GitHub REST API through Postman.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/issues",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "issues"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Issue created successfully\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "pm.environment.set(\"issue_number\", jsonData.number);",
+                  "",
+                  "pm.test(\"Issue number was saved\", function () {",
+                  "    pm.expect(pm.environment.get(\"issue_number\")).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PUT - Create & Update",
+      "item": [
+        {
+          "name": "PUT Create File",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Create test file using Postman\",\n  \"content\": \"SGVsbG8gZnJvbSBQb3N0bWFuIQ==\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/contents/{{file_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "contents",
+                "{{file_path}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"File created successfully\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.content && jsonData.content.sha) {",
+                  "    pm.environment.set(\"file_sha\", jsonData.content.sha);",
+                  "}",
+                  "",
+                  "pm.test(\"File SHA was saved\", function () {",
+                  "    pm.expect(pm.environment.get(\"file_sha\")).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT Update File",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Update test file using Postman\",\n  \"content\": \"VXBkYXRlZCBjb250ZW50IGZyb20gUG9zdG1hbiE=\",\n  \"sha\": \"{{file_sha}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/contents/{{file_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "contents",
+                "{{file_path}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"File updated successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.content && jsonData.content.sha) {",
+                  "    pm.environment.set(\"file_sha\", jsonData.content.sha);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PATCH - Update",
+      "item": [
+        {
+          "name": "PATCH Update Issue",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Postman API Testing Issue\",\n  \"body\": \"This GitHub issue was updated using the PATCH method in Postman.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/issues/{{issue_number}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "issues",
+                "{{issue_number}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Issue updated successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Issue title was updated\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.title).to.eql(\"Updated Postman API Testing Issue\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DELETE",
+      "item": [
+        {
+          "name": "DELETE File",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Delete test file using Postman\",\n  \"sha\": \"{{file_sha}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/contents/{{file_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "contents",
+                "{{file_path}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"File deleted successfully\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Deleted File",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "X-GitHub-Api-Version",
+                "value": "2022-11-28"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/repos/{{owner}}/{{repo}}/contents/{{file_path}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "repos",
+                "{{owner}}",
+                "{{repo}}",
+                "contents",
+                "{{file_path}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted file returns 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
